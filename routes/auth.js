@@ -54,7 +54,7 @@ router.post("/login", async (req, res, next) => {
   } else next(new ErrorResponse(404, "User with email not found!"));
 });
 
-router.post("/updatePassword", async (req, res, next) => {
+router.patch("/updatePassword", async (req, res, next) => {
   const { email, currentPassword, newPassword } = req.body;
   const user = await User.getUserByEmail(email);
   if (!user) return next(new ErrorResponse(404, "User with email not found!"));
