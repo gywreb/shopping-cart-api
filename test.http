@@ -42,7 +42,7 @@ Content-Type: application/json
 }
 
 ### delete role
-DELETE http://localhost:4000/api/v1/role/:id
+DELETE http://localhost:4000/api/v1/role?id=
 
 
 #### category
@@ -57,7 +57,7 @@ Content-Type: application/json
 }
 
 ### delete category
-DELETE http://localhost:4000/api/v1/category/:id
+DELETE http://localhost:4000/api/v1/category?id=
 
 
 
