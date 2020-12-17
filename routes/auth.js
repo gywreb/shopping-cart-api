@@ -9,11 +9,6 @@ router.post(
   "/register",
   asyncMiddleware(async (req, res, next) => {
     const { name, email, password } = req.body;
-    const user = await User.getUserByEmail(email);
-    if (user)
-      return next(
-        new ErrorResponse(409, "User with email is already existed!")
-      );
     const newUser = new User({
       name,
       email,

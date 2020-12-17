@@ -3,6 +3,8 @@ const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
 const { Schema } = mongoose;
 
+mongoose.set("runValidators", true);
+
 const UserSchema = new Schema(
   {
     name: {
@@ -14,6 +16,7 @@ const UserSchema = new Schema(
       type: String,
       required: [true, "email is required"],
       match: [/^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/g, "Invalid email!"],
+      unique: true,
     },
     password: {
       type: String,
@@ -44,6 +47,19 @@ UserSchema.pre("save", async function (next) {
     next(error);
   }
 });
+
+// UserSchema.pre("findOneAndUpdate", async function (next) {
+//   const user = this;
+//   // user.getOptions().runValidators = true;
+//   console.log(user.getOptions());
+//   try {
+//     const salt = await bcrypt.genSalt();
+//     user._update.password = await bcrypt.hash(user._update.password, salt);
+//     next();
+//   } catch (error) {
+//     next(error);
+//   }
+// });
 
 UserSchema.methods.passwordValidation = async function (inputPassword) {
   return await bcrypt.compare(inputPassword, this.password);

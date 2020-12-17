@@ -20,7 +20,6 @@ router
         role_name,
         role_desc,
       });
-
       const data = await newRole.save();
       res.status(201).json(
         new SuccessResponse(201, {

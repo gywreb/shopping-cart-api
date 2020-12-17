@@ -9,6 +9,7 @@ exports.dbConnector = () => {
       .connect(uri + DATABASE, {
         useNewUrlParser: true,
         useUnifiedTopology: true,
+        useFindAndModify: false,
       })
       .then(() => console.log(`DB is running`.yellow))
       .catch((error) => console.log(error));
