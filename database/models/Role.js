@@ -3,7 +3,8 @@ const { Schema } = mongoose;
 
 const RoleSchema = new Schema({
   role_id: {
-    type: Number,
+    type: String,
+    enum: ["admin", "guest", "teacher", "support"],
     required: [true, "role id is required"],
   },
   role_name: {

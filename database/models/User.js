@@ -24,9 +24,10 @@ const UserSchema = new Schema(
       required: [true, "password is required"],
     },
     role: {
-      type: Number,
+      type: String,
+      enum: ["admin", "guest", "teacher", "support"],
       required: [true, "role is required"],
-      default: 0, //guest
+      default: "guest",
     },
     isActive: {
       type: Boolean,

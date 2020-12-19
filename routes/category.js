@@ -1,12 +1,12 @@
 const express = require("express");
 const Category = require("../database/models/Category");
 const { asyncMiddleware } = require("../middleware/asyncMiddleware");
-const { authorize } = require("../middleware/auth");
+const { jwtAuth } = require("../middleware/auth");
 const { ErrorResponse } = require("../model/ErrorResponse");
 const { SuccessResponse } = require("../model/SuccessResponse");
 const router = express.Router();
 
-router.use(authorize);
+router.use(jwtAuth);
 
 router
   .route("/")

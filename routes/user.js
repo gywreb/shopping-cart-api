@@ -1,14 +1,15 @@
 const express = require("express");
 const User = require("../database/models/User");
 const { asyncMiddleware } = require("../middleware/asyncMiddleware");
-const { authorize } = require("../middleware/auth");
+const { jwtAuth, authorize } = require("../middleware/auth");
 const { ErrorResponse } = require("../model/ErrorResponse");
 const { SuccessResponse } = require("../model/SuccessResponse");
 const router = express.Router();
 
-router.use(authorize);
+router.use(jwtAuth);
 
 router.route("/all").get(
+  authorize("admin", "guest"),
   asyncMiddleware(async (req, res, next) => {
     const users = await User.find().select("-password");
     if (!users.length) return next(new ErrorResponse(404, "No user found!"));
@@ -44,7 +45,7 @@ router
       if (!id.trim()) return next(new ErrorResponse(400, "id is empty!"));
       if (req.user.id.includes(id))
         return next(new ErrorResponse(409, "You cant update yourself!"));
-      // const updatedUser = await User.findByIdAndUpdate({ _id: id }, req.body, {
+      // const updatedUser = await User.findByOneAndUpdate({ _id: id }, req.body, {
       //   new: true,
       // });
       const user = await User.findById(id);
@@ -52,11 +53,12 @@ router
       if (name) user.name = name;
       if (email) user.email = email;
       if (password) user.password = password;
-      await user.save();
+      const updatedUser = await user.save();
+      if (!updatedUser) return next(new ErrorResponse(400, "cannot updated!"));
       res.json(
         new SuccessResponse(200, {
           message: "successfully updated",
-          user,
+          updatedUser,
         })
       );
     })

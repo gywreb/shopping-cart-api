@@ -2,7 +2,7 @@ const { ErrorResponse } = require("../model/ErrorResponse");
 const jwt = require("jsonwebtoken");
 const User = require("../database/models/User");
 
-exports.authorize = async (req, res, next) => {
+exports.jwtAuth = async (req, res, next) => {
   let token;
   // check tokem in request cookies or in request header authorization
   if (req.cookies.token) token = req.cookies.token;
@@ -17,10 +17,17 @@ exports.authorize = async (req, res, next) => {
     const decoded = jwt.verify(token, process.env.JWT_SECRET);
     try {
       req.user = await User.getUserByEmail(decoded.email);
-      if (req.user) next();
-      else return next(new ErrorResponse(401, "You are unauthorized!"));
+      if (!req.user)
+        return next(new ErrorResponse(401, "You are unauthorized!"));
+      next();
     } catch (error) {}
   } catch (error) {
     next(new ErrorResponse(401, "You are unauthorized!"));
   }
+};
+
+exports.authorize = (...roles) => (req, res, next) => {
+  if (!roles.includes(req.user.role))
+    return next(new ErrorResponse(401, "you are unauthorized!"));
+  next();
 };
