@@ -1,6 +1,8 @@
 const express = require("express");
+const swaggerUI = require("swagger-ui-express");
+const swaggerDoc = require("./swagger.json");
 const colors = require("colors");
-const dotenv = require("dotenv");
+const dotenv = require("dotenv").config();
 const cookieParser = require("cookie-parser");
 const cors = require("cors");
 const { dbConnector } = require("./database/dbConnect");
@@ -13,12 +15,11 @@ const { errorHandler } = require("./middleware/errorHandler");
 
 dbConnector();
 
-dotenv.config();
-
 app.use(express.json());
 app.use(cookieParser());
 app.use(cors());
 
+app.use("/api-docs", swaggerUI.serve, swaggerUI.setup(swaggerDoc));
 app.use("/api/v1/auth", auth);
 app.use("/api/v1/role", role);
 app.use("/api/v1/category", category);

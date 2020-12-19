@@ -27,7 +27,10 @@ exports.jwtAuth = async (req, res, next) => {
 };
 
 exports.authorize = (...roles) => (req, res, next) => {
+  if (!req.user) return next(new ErrorResponse(401, "you are unauthorized!"));
   if (!roles.includes(req.user.role))
-    return next(new ErrorResponse(401, "you are unauthorized!"));
+    return next(
+      new ErrorResponse(403, "you don't have the permission to access")
+    );
   next();
 };

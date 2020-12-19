@@ -25,8 +25,6 @@ const UserSchema = new Schema(
     },
     role: {
       type: String,
-      enum: ["admin", "guest", "teacher", "support"],
-      required: [true, "role is required"],
       default: "guest",
     },
     isActive: {
@@ -34,8 +32,15 @@ const UserSchema = new Schema(
       default: true,
     },
   },
-  { timestamps: true }
+  { id: false, toJSON: { virtuals: true }, timestamps: true }
 );
+
+UserSchema.virtual("role_detail", {
+  ref: "Role",
+  localField: "role",
+  foreignField: "role_name",
+  justOne: true,
+});
 
 UserSchema.pre("save", async function (next) {
   const user = this;
@@ -48,19 +53,6 @@ UserSchema.pre("save", async function (next) {
     next(error);
   }
 });
-
-// UserSchema.pre("findOneAndUpdate", async function (next) {
-//   const user = this;
-//   // user.getOptions().runValidators = true;
-//   console.log(user.getOptions());
-//   try {
-//     const salt = await bcrypt.genSalt();
-//     user._update.password = await bcrypt.hash(user._update.password, salt);
-//     next();
-//   } catch (error) {
-//     next(error);
-//   }
-// });
 
 UserSchema.methods.passwordValidation = async function (inputPassword) {
   return await bcrypt.compare(inputPassword, this.password);

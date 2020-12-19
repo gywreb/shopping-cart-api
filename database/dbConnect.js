@@ -1,12 +1,15 @@
 const mongoose = require("mongoose");
 
-const uri = process.env.MONGODB_URI || "mongodb://localhost:27017/";
 const DATABASE = "shopping-cart";
+const uri =
+  process.env.NODE_ENV === "production"
+    ? process.env.MONGODB_URI
+    : "mongodb://localhost:27017/" + DATABASE;
 
 exports.dbConnector = () => {
   if (!mongoose.connection.readyState) {
     mongoose
-      .connect(uri + DATABASE, {
+      .connect(uri, {
         useNewUrlParser: true,
         useUnifiedTopology: true,
         useFindAndModify: false,
