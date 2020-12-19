@@ -9,7 +9,7 @@
       }
     },
     {
-      "url": "",
+      "url": "https://gywreb-node.herokuapp.com/api/v1",
       "description": "production server"
     }
   ],
