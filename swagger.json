@@ -30,6 +30,10 @@
     {
       "name": "Role",
       "description": "Operations about role "
+    },
+    {
+      "name": "Product",
+      "description": "Operations about product"
     }
   ],
   "paths": {
@@ -105,7 +109,7 @@
       }
     },
     "/auth/updatePassword": {
-      "post": {
+      "patch": {
         "tags": ["Auth"],
         "summary": "user password update",
         "requestBody": {
@@ -293,20 +297,14 @@
           }
         },
         "responses": {
-          "200": {
+          "201": {
             "$ref": "#/components/responses/OK"
           },
           "400": {
             "$ref": "#/components/responses/BadRequest"
           },
-          "404": {
-            "$ref": "#/components/responses/NotFound"
-          },
           "401": {
             "$ref": "#/components/responses/Unauthorized"
-          },
-          "403": {
-            "$ref": "#/components/responses/Forbidden"
           }
         }
       }
@@ -319,7 +317,7 @@
         "parameters": [
           {
             "name": "roleId",
-            "in": "query",
+            "in": "path",
             "description": "role ObjectId from mongodb",
             "required": true,
             "schema": {
@@ -342,6 +340,184 @@
           },
           "403": {
             "$ref": "#/components/responses/Forbidden"
+          }
+        }
+      }
+    },
+    "/product": {
+      "get": {
+        "tags": ["Product"],
+        "summary": "get all products",
+        "security": [{ "bearerAuth": [] }],
+        "responses": {
+          "201": {
+            "$ref": "#/components/responses/OK"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden"
+          }
+        }
+      },
+      "post": {
+        "tags": ["Product"],
+        "summary": "create new product",
+        "security": [{ "bearerAuth": [] }],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Product"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "$ref": "#/components/responses/OK"
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          }
+        }
+      }
+    },
+    "/product/{productId}": {
+      "get": {
+        "tags": ["Product"],
+        "summary": "get product by id",
+        "security": [{ "bearerAuth": [] }],
+        "responses": {
+          "200": {
+            "$ref": "#/components/responses/OK"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          }
+        }
+      },
+      "delete": {
+        "tags": ["Product"],
+        "summary": "delete product by id",
+        "security": [{ "bearerAuth": [] }],
+        "parameters": [
+          {
+            "name": "productId",
+            "in": "path",
+            "required": true,
+            "description": "product ObjectId from mongodb",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "$ref": "#/components/responses/OK"
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          }
+        }
+      }
+    },
+    "/category": {
+      "get": {
+        "tags": ["Category"],
+        "summary": "get all categories",
+        "security": [{ "bearerAuth": [] }],
+        "responses": {
+          "200": {
+            "$ref": "#/components/responses/OK"
+          },
+
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden"
+          }
+        }
+      },
+      "post": {
+        "tags": ["Category"],
+        "summary": "create new category",
+        "security": [{ "bearerAuth": [] }],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Category"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "$ref": "#/components/responses/OK"
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          }
+        }
+      }
+    },
+    "/category/{categoryId}": {
+      "delete": {
+        "tags": ["Category"],
+        "summary": "delete category by id",
+        "security": [{ "bearerAuth": [] }],
+        "parameters": [
+          {
+            "name": "categoryId",
+            "in": "path",
+            "required": true,
+            "description": "category ObjectId from mongodb",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "$ref": "#/components/responses/OK"
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
           }
         }
       }
@@ -462,6 +638,47 @@
             "enum": ["admin", "guest", "teacher", "supporter"]
           },
           "role_desc": {
+            "type": "string"
+          }
+        }
+      },
+      "Product": {
+        "type": "object",
+        "required": ["sku", "name", "price", "quantity", "description"],
+        "properties": {
+          "sku": {
+            "type": "string",
+            "uniqueItems": true
+          },
+          "name": {
+            "type": "string"
+          },
+          "price": {
+            "type": "number"
+          },
+          "quantity": {
+            "type": "number"
+          },
+          "description": {
+            "type": "string"
+          },
+          "image": {
+            "type": "string"
+          },
+          "category": {
+            "type": "string"
+          }
+        }
+      },
+      "Category": {
+        "type": "object",
+        "required": ["name", "description"],
+        "properties": {
+          "name": {
+            "type": "string",
+            "uniqueItems": true
+          },
+          "description": {
             "type": "string"
           }
         }

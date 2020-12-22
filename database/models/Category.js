@@ -2,26 +2,15 @@ const mongoose = require("mongoose");
 const { Schema } = mongoose;
 
 const CategorySchema = new Schema({
-  category_id: {
+  name: {
     type: String,
-    required: [true, "category id is required"],
+    required: [true, "name is required"],
+    unique: true,
   },
-  category_desc: {
+  description: {
     type: String,
-    required: [true, "category description is required"],
-  },
-  category_name: {
-    type: String,
-    required: [true, "category name is required"],
+    required: [true, "description is required"],
   },
 });
-
-CategorySchema.statics.getOneByCategoryId = async function (category_id) {
-  return await this.findOne({ category_id }).exec();
-};
-
-CategorySchema.statics.deleteOneById = async function (_id) {
-  return await this.deleteOne({ _id }).exec();
-};
 
 module.exports = mongoose.model("Category", CategorySchema, "categories");

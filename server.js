@@ -11,6 +11,7 @@ const auth = require("./routes/auth");
 const role = require("./routes/role");
 const category = require("./routes/category");
 const user = require("./routes/user");
+const product = require("./routes/product");
 const { errorHandler } = require("./middleware/errorHandler");
 
 dbConnector();
@@ -24,6 +25,7 @@ app.use("/api/v1/auth", auth);
 app.use("/api/v1/role", role);
 app.use("/api/v1/category", category);
 app.use("/api/v1/user", user);
+app.use("/api/v1/product", product);
 app.use(errorHandler);
 
 const port = process.env.PORT || 4000;

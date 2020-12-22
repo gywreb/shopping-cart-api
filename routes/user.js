@@ -5,14 +5,11 @@ const userController = require("../controllers/userController");
 
 router.use(jwtAuth);
 
-router
-  .route("/all")
-  .get(authorize("admin", "guest"), userController.getAllUsers);
-
+router.route("/all").get(authorize("admin"), userController.getAllUsers);
 router
   .route("/:id")
-  .get(userController.getUserById)
-  .delete(userController.deleteUserById)
+  .get(authorize("admin"), userController.getUserById)
+  .delete(authorize("admin"), userController.deleteUserById)
   .patch(userController.updateUserById);
 
 module.exports = router;
