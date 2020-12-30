@@ -34,6 +34,10 @@
     {
       "name": "Product",
       "description": "Operations about product"
+    },
+    {
+      "name": "Category",
+      "description": "Operations about category"
     }
   ],
   "paths": {
@@ -368,7 +372,7 @@
         "requestBody": {
           "required": true,
           "content": {
-            "application/json": {
+            "multipart/form-data": {
               "schema": {
                 "$ref": "#/components/schemas/Product"
               }
@@ -644,7 +648,15 @@
       },
       "Product": {
         "type": "object",
-        "required": ["sku", "name", "price", "quantity", "description"],
+        "required": [
+          "sku",
+          "name",
+          "price",
+          "quantity",
+          "description",
+          "image",
+          "category"
+        ],
         "properties": {
           "sku": {
             "type": "string",
@@ -663,7 +675,8 @@
             "type": "string"
           },
           "image": {
-            "type": "string"
+            "type": "string",
+            "format": "binary"
           },
           "category": {
             "type": "string"

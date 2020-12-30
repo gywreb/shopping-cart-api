@@ -1,20 +1,38 @@
 const mongoose = require("mongoose");
 
-const DATABASE = "shopping-cart";
-const uri =
-  process.env.NODE_ENV === "production"
-    ? process.env.MONGODB_URI
-    : "mongodb://localhost:27017/" + DATABASE;
-
-exports.dbConnector = () => {
-  if (!mongoose.connection.readyState) {
+exports.ConnectMongo = class ConnectMongo {
+  constructor() {
+    this.gfs = null;
+  }
+  static getConnect() {
     mongoose
-      .connect(uri, {
+      .connect(process.env.MONGODB_URI, {
         useNewUrlParser: true,
+        useCreateIndex: true,
         useUnifiedTopology: true,
         useFindAndModify: false,
       })
-      .then(() => console.log(`DB is running`.yellow))
-      .catch((error) => console.log(error));
+      .then(() => console.log(`DB is connected`.yellow));
+
+    const conn = mongoose.connection;
+
+    conn.once("open", () => {
+      this.gfs = new mongoose.mongo.GridFSBucket(conn.db, {
+        bucketName: process.env.MONGO_BUCKET,
+      });
+    });
   }
 };
+
+// exports.dbConnector = () => {
+//   if (!mongoose.connection.readyState) {
+//     const connect = mongoose
+//       .createConnect(uri, {
+//         useNewUrlParser: true,
+//         useUnifiedTopology: true,
+//         useFindAndModify: false,
+//       })
+//       .then(() => console.log(`DB is running`.yellow))
+//       .catch((error) => console.log(error));
+//   }
+// };

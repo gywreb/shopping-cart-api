@@ -3,8 +3,11 @@ const { ErrorResponse } = require("../model/ErrorResponse");
 exports.errorHandler = (err, req, res, next) => {
   let errors = { ...err };
 
+  // file error
+  if (err.message && err.name === "Error")
+    errors = new ErrorResponse(500, err.message);
   // mongoose validator happen
-  if (err.name === "ValidationError") {
+  else if (err.name === "ValidationError") {
     errors = new ErrorResponse(400, {});
     for (let error in err.errors) {
       errors.message[error] = err.errors[error].message;
@@ -22,9 +25,7 @@ exports.errorHandler = (err, req, res, next) => {
   // resource not found error
   else if (err.name === "CastError")
     errors = new ErrorResponse(404, "resource not found!");
-
-  console.log(err.message);
-
+  console.log(err.name, err.message);
   res.status(errors.code || 500).json({
     success: false,
     code: errors.code || 500,

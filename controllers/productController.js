@@ -17,7 +17,9 @@ exports.createNewProduct = asyncMiddleware(async (req, res, next) => {
     quantity,
     description,
     category,
+    image: req.file.filename,
   });
+  console.log(req.file);
   const product = await newProduct.save();
   res.status(201).json(new SuccessResponse(201, product));
 });

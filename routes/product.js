@@ -2,13 +2,14 @@ const express = require("express");
 const router = express.Router();
 const productController = require("../controllers/productController");
 const { jwtAuth, authorize } = require("../middleware/auth");
+const mongoUpload = require("../middleware/mongoUpload");
 
 router.use(jwtAuth);
 
 router
   .route("/")
   .get(authorize("admin"), productController.getAllProducts)
-  .post(productController.createNewProduct);
+  .post(mongoUpload.single("image"), productController.createNewProduct);
 
 router
   .route("/:productId")
